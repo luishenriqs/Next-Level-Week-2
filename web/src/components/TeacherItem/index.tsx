@@ -1,34 +1,50 @@
 import React from 'react';
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
+import api from '../../services/api';
 import './style.css';
 
-function TeacherItem() {
+export interface Teacher {
+    id: number;
+    avatar: string;
+    bio: string;
+    cost: number;
+    name: string;
+    subject: string;
+    whatsapp: number;
+}
+interface TeacherItemProps {
+  teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('http://localhost:3333/connections', {
+      user_id: teacher.id
+    })
+  }
   return (
     <article className="teacher-item">
       <header>
-          <img src="https://avatars2.githubusercontent.com/u/63956850?s=460&u=96dcd152ff4caea77ab8eb01757d1015b4943b3d&v=4" alt="Luís Henrique"/>
+          <img src={teacher.avatar} alt={teacher.name}/>
           <div>
-              <strong>Luís Henrique</strong>
-              <span>Xadrez</span>
+              <strong>{teacher.name}</strong>
+              <span>{teacher.subject}</span>
           </div>
       </header>
-      <p>
-          Entusiasta do esporte da mente mais antigo e popular de todos os tempos
-          <br /><br />
-          Apaixonado por Xadrez desde a infância, ja ajudou milhares de 
-          pessoas a conhecerem esse nobre esporte. Com uma carreira de 
-          sucesso, foi campeão municipal por equipes nos jogos da primavera
-          de 1996.
-      </p>
+      <p>{teacher.bio}</p>
       <footer>
           <p>
               Preço/hora 
-              <strong>R$ 80,00</strong>
+              <strong>R${teacher.cost}</strong>
           </p>
-          <button type="button">
+          <a
+            target='_blank' 
+            onClick={createNewConnection} 
+            href={`https://wa.me/${teacher.whatsapp}` } 
+            type="button">
               <img src={whatsappIcon} alt="Whatsapp"/>
               Entrar em contato
-          </button>
+          </a>
       </footer>
     </article>
   )
